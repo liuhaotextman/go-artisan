@@ -1,7 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"go-artisan/route"
+	"net/http"
+)
 
 func main() {
-	fmt.Println("this is a start")
+	router := route.New()
+	router.GET("/", func(writer http.ResponseWriter, request *http.Request) {
+		fmt.Fprintf(writer, "this is worked")
+	})
+	err := router.Run(":9090")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
