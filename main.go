@@ -3,13 +3,12 @@ package main
 import (
 	"fmt"
 	"go-artisan/route"
-	"net/http"
 )
 
 func main() {
 	router := route.New()
-	router.GET("/", func(writer http.ResponseWriter, request *http.Request) {
-		fmt.Fprintf(writer, "this is worked")
+	router.GET("/", func(c *route.Context) {
+		c.HTML(200, "this is sucks")
 	})
 	err := router.Run(":9090")
 	if err != nil {

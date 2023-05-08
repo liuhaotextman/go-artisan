@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-type HandlerFunction func(http.ResponseWriter, *http.Request)
+type HandlerFunction func(*Context)
 
 type router struct {
 	routers map[string]HandlerFunction
@@ -48,7 +48,8 @@ func (r *router) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		}
 		return
 	}
-	handler(writer, request)
+	context := NewContext(writer, request)
+	handler(context)
 }
 
 func (r *router) Run(address string) error {

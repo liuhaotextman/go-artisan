@@ -14,6 +14,15 @@ type Context struct {
 	statusCode int
 }
 
+func NewContext(w http.ResponseWriter, r *http.Request) *Context {
+	return &Context{
+		writer:  w,
+		request: r,
+		method:  r.Method,
+		uri:     r.URL.Path,
+	}
+}
+
 func (c *Context) Header(key, value string) {
 	c.writer.Header().Set(key, value)
 }
