@@ -1,13 +1,13 @@
 package route
 
 import (
-	"fmt"
 	"net/http"
 )
 
 type HandlerFunction func(*Context)
 
 type router struct {
+	roots   map[string]*node
 	routers map[string]HandlerFunction
 }
 
@@ -39,16 +39,16 @@ func (r *router) addRoute(method string, uri string, handler HandlerFunction) {
 }
 
 func (r *router) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
-	key := request.Method + ":" + request.URL.Path
+	context := NewContext(writer, request)
+	key := context.method + ":" + context.uri
 	handler, ok := r.routers[key]
 	if !ok {
-		_, err := fmt.Fprintf(writer, "uri not found")
-		if err != nil {
-			return
-		}
+		context.JSON(400, map[string]string{
+			"code": "400",
+			"msg":  "url not found",
+		})
 		return
 	}
-	context := NewContext(writer, request)
 	handler(context)
 }
 
