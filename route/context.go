@@ -11,6 +11,7 @@ type Context struct {
 	request    *http.Request
 	method     string
 	uri        string
+	params     map[string]string
 	statusCode int
 }
 
@@ -31,8 +32,17 @@ func (c *Context) GetHeader(key string) string {
 	return c.request.Header.Get(key)
 }
 
-func (c *Context) Params(key string) string {
+func (c *Context) Query(key string) string {
 	return c.request.URL.Query().Get(key)
+}
+
+func (c *Context) Params(key string) string {
+	item, ok := c.params[key]
+	if ok {
+		return item
+	}
+
+	return ""
 }
 
 func (c *Context) PostForm(key string) string {
