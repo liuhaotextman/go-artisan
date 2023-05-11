@@ -7,9 +7,9 @@ import (
 
 func main() {
 	router := route.New()
-	//router.GET("/", func(c *route.Context) {
-	//	c.HTML(200, "this is sucks")
-	//})
+	router.GET("/", func(c *route.Context) {
+		c.HTML(200, "this is sucks")
+	})
 	router.GET("index", func(context *route.Context) {
 		context.HTML(200, "home page")
 	})

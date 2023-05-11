@@ -33,7 +33,7 @@ func (n *node) matchChildren(part string) []*node {
 }
 
 func (n *node) search(parts []string, height int) *node {
-	if len(parts) >= height || strings.HasPrefix(n.part, "*") {
+	if len(parts) == height || strings.HasPrefix(n.part, "*") {
 		if n.pattern == "" {
 			return nil
 		}
@@ -53,7 +53,7 @@ func (n *node) search(parts []string, height int) *node {
 }
 
 func (n *node) insert(pattern string, parts []string, height int) {
-	if height >= len(parts) {
+	if height == len(parts) {
 		n.pattern = pattern
 		return
 	}

@@ -73,11 +73,11 @@ func (r *router) getRoute(method, pattern string) (*node, map[string]string) {
 	if node != nil {
 		parts := parsePattern(node.pattern)
 		for key, part := range parts {
-			if strings.HasSuffix(part, ":") {
+			if strings.HasPrefix(part, ":") {
 				params[part[1:]] = searchParts[key]
 			}
 
-			if strings.HasSuffix(part, "*") {
+			if strings.HasPrefix(part, "*") {
 				params[part[1:]] = strings.Join(searchParts[key:], "/")
 				break
 			}
@@ -102,7 +102,7 @@ func (r *router) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	if !ok {
 		context.JSON(400, map[string]string{
 			"code": "400",
-			"msg":  "url not found",
+			"msg":  "url handler not found",
 		})
 		return
 	}
