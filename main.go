@@ -16,6 +16,11 @@ func main() {
 	router.GET("detail/:id", func(context *route.Context) {
 		context.HTML(200, "detail id="+context.Params("id"))
 	})
+
+	adminGroup := router.Group("admin")
+	adminGroup.GET("login", func(context *route.Context) {
+		context.HTML(200, "admin user login page")
+	})
 	err := router.Run(":9090")
 	if err != nil {
 		fmt.Println(err.Error())

@@ -10,29 +10,18 @@ type HandlerFunction func(*Context)
 type router struct {
 	roots   map[string]*node
 	routers map[string]HandlerFunction
+	*GroupRouter
 }
 
 func New() *router {
-	return &router{
+	router := &router{
 		routers: make(map[string]HandlerFunction),
 		roots:   make(map[string]*node),
 	}
-}
-
-func (r *router) GET(uri string, handler HandlerFunction) {
-	r.addRoute("GET", uri, handler)
-}
-
-func (r *router) POST(uri string, handler HandlerFunction) {
-	r.addRoute("POST", uri, handler)
-}
-
-func (r *router) PUT(uri string, handler HandlerFunction) {
-	r.addRoute("PUT", uri, handler)
-}
-
-func (r *router) DELETE(uri string, handler HandlerFunction) {
-	r.addRoute("DELETE", uri, handler)
+	router.GroupRouter = &GroupRouter{
+		router: router,
+	}
+	return router
 }
 
 func parsePattern(pattern string) []string {
