@@ -10,6 +10,7 @@ type HandlerFunction func(*Context)
 type router struct {
 	roots   map[string]*node
 	routers map[string]HandlerFunction
+	groups  []*GroupRouter
 	*GroupRouter
 }
 
@@ -21,6 +22,7 @@ func New() *router {
 	router.GroupRouter = &GroupRouter{
 		router: router,
 	}
+	router.groups = []*GroupRouter{router.GroupRouter}
 	return router
 }
 
@@ -77,7 +79,15 @@ func (r *router) getRoute(method, pattern string) (*node, map[string]string) {
 }
 
 func (r *router) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+	var middlewares []HandlerFunction
+	for _, group := range r.groups {
+		if strings.HasPrefix(request.URL.Path, group.prefix) {
+			middlewares = append(middlewares, group.middlewares...)
+		}
+	}
+
 	context := NewContext(writer, request)
+	context.handlers = middlewares
 	node, params := r.getRoute(context.method, context.uri)
 	if node == nil {
 		context.JSON(400, map[string]string{
@@ -96,7 +106,8 @@ func (r *router) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 	context.params = params
-	handler(context)
+	context.handlers = append(context.handlers, handler)
+	context.Next()
 }
 
 func (r *router) Run(address string) error {

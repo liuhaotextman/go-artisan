@@ -3,10 +3,10 @@ package route
 import "strings"
 
 type GroupRouter struct {
-	prefix     string
-	parent     *GroupRouter
-	middleware []HandlerFunction
-	router     *router
+	prefix      string
+	parent      *GroupRouter
+	middlewares []HandlerFunction
+	router      *router
 }
 
 func (g *GroupRouter) GET(uri string, handler HandlerFunction) {
@@ -37,5 +37,11 @@ func (g *GroupRouter) Group(uri string) *GroupRouter {
 	if !strings.HasSuffix(uri, "/") {
 		uri = uri + "/"
 	}
-	return &GroupRouter{prefix: uri, parent: g, router: g.router}
+	groups := &GroupRouter{prefix: g.prefix + uri, parent: g, router: g.router}
+	g.router.groups = append(g.router.groups, groups)
+	return groups
+}
+
+func (g *GroupRouter) Use(middlewares ...HandlerFunction) {
+	g.middlewares = append(g.middlewares, middlewares...)
 }
