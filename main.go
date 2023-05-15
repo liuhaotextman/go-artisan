@@ -6,6 +6,10 @@ import (
 )
 
 func main() {
+	router()
+}
+
+func router() {
 	router := route.New()
 	router.GET("/", func(c *route.Context) {
 		c.HTML(200, "this is sucks")
