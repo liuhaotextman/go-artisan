@@ -1,6 +1,8 @@
-package cache
+package lru
 
-import "testing"
+import (
+	"testing"
+)
 
 type String string
 
