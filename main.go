@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"go-artisan/cache"
@@ -17,7 +18,8 @@ var db = map[string]string{
 
 func main() {
 	//router()
-	cacheRun()
+	//cacheRun()
+	myOrm()
 }
 
 func router() {
@@ -57,4 +59,24 @@ func cacheRun() {
 	peers := cache.NewHTTPPool(addr)
 	log.Println("gee cache is running at", addr)
 	log.Fatal(http.ListenAndServe(addr, peers))
+}
+
+func myOrm() {
+	db, _ := sql.Open("sqlite3", "gee.db")
+	defer func() {
+		_ = db.Close()
+	}()
+
+	_, _ = db.Exec("drop table if exists User;")
+	_, _ = db.Exec("create table User(Name text);")
+	result, err := db.Exec("insert into User(`name`) values (?), (?)")
+	if err != nil {
+		affected, _ := result.RowsAffected()
+		log.Println(affected)
+	}
+	row := db.QueryRow("select Name from User limit 1;")
+	var name string
+	if err := row.Scan(&name); err == nil {
+		log.Println(name)
+	}
 }
