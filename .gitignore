@@ -1,0 +1,7 @@
+/.idea
+/.vscode
+/env
+*.log
+.env
+*.bak
+*.test
