@@ -10,6 +10,10 @@ type sqlite3 struct{}
 
 var _ Dialect = (*sqlite3)(nil)
 
+func init() {
+	RegisterDialect("sqlite3", &sqlite3{})
+}
+
 func (s sqlite3) DataTypeOf(typ reflect.Value) string {
 	switch typ.Kind() {
 	case reflect.Bool:
